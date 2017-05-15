@@ -37,17 +37,23 @@ describe Oystercard do
 
   describe '#touch_out' do
     it 'should change the in journey status to false' do
+      oystercard.top_up(balance_limit)
       oystercard.touch_in
       oystercard.touch_out
       expect(oystercard).not_to be_in_journey
     end
+    it 'should reduce the balance by the fare' do
+      oystercard.top_up(balance_limit)
+      oystercard.touch_in
+      expect { oystercard.touch_out }.to change { oystercard.balance }.from(balance_limit).to(balance_limit-1)
+    end
   end
+
 
   describe '#in_journey?' do
     it 'should be false before touching in' do
       expect(oystercard).not_to be_in_journey
     end
   end
-
 
 end
