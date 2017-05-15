@@ -9,7 +9,7 @@ describe Oystercard do
 
   describe '#top_up' do
     it 'should be able to be topped up' do
-      expect { oystercard.top_up(5) }.to change { oystercard.balance }.from(0).to(5)
+      expect { oystercard.top_up(balance_limit) }.to change { oystercard.balance }.by(balance_limit)
     end
     it 'should prevent balance from exceeding £90' do
       oystercard.top_up(balance_limit)
@@ -39,7 +39,7 @@ describe Oystercard do
       expect(oystercard).not_to be_in_journey
     end
     it 'should reduce the balance by the fare' do
-      expect { oystercard.touch_out }.to change { oystercard.balance }.from(balance_limit).to(balance_limit-1)
+      expect { oystercard.touch_out }.to change { oystercard.balance }.by(-Oystercard::MINIMUM_FARE)
     end
   end
 
