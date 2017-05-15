@@ -7,6 +7,10 @@ describe Oystercard do
     expect(oystercard.balance).to eq 0
   end
 
+  it 'has a default entry station of nil' do
+    expect(oystercard.entry_station).to eq nil
+  end
+
   describe '#top_up' do
     it 'should be able to be topped up' do
       expect { oystercard.top_up(balance_limit) }.to change { oystercard.balance }.by(balance_limit)
@@ -20,18 +24,23 @@ describe Oystercard do
   describe '#touch_in' do
     it 'should change the in journey status to true' do
       oystercard.top_up(balance_limit)
-      oystercard.touch_in
+      oystercard.touch_in(:station)
       expect(oystercard).to be_in_journey
     end
     it 'should raise an exception when trying to touch in with balance less than £1' do
-      expect{ oystercard.touch_in }.to raise_error { "Insufficient funds" }
+      expect{ oystercard.touch_in(:station) }.to raise_error { "Insufficient funds" }
+    end
+    it 'should remember the station touched in at' do
+      oystercard.top_up(balance_limit)
+      oystercard.touch_in(:station)
+      expect(oystercard.entry_station).to eq :station
     end
   end
 
   describe '#touch_out' do
     before do
       oystercard.top_up(balance_limit)
-      oystercard.touch_in
+      oystercard.touch_in(:station)
     end
 
     it 'should change the in journey status to false' do
@@ -40,6 +49,10 @@ describe Oystercard do
     end
     it 'should reduce the balance by the fare' do
       expect { oystercard.touch_out }.to change { oystercard.balance }.by(-Oystercard::MINIMUM_FARE)
+    end
+    it 'should forget entry station upon touching out' do
+      oystercard.touch_out
+      expect(oystercard.entry_station).to eq nil
     end
   end
 
