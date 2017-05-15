@@ -4,7 +4,6 @@ class Oystercard
   MINIMUM_FARE = 1
   def initialize
     @balance = 0
-    @in_journey = false
     @entry_station = nil
   end
 
@@ -16,17 +15,15 @@ class Oystercard
   def touch_in(station)
     raise "Insufficient funds" if balance < MINIMUM_FARE
     @entry_station = station
-    @in_journey = true
   end
 
   def touch_out
     deduct(MINIMUM_FARE)
     @entry_station = nil
-    @in_journey = false
   end
 
   def in_journey?
-    @in_journey
+    @entry_station
   end
 
   private
