@@ -17,13 +17,6 @@ describe Oystercard do
     end
   end
 
-  describe '#deduct' do
-    it 'should be able to have balance deducted' do
-      oystercard.top_up(balance_limit)
-      expect { oystercard.deduct(5) }.to change { oystercard.balance }.from(balance_limit).to(balance_limit-5)
-    end
-  end
-
   describe '#touch_in' do
     it 'should change the in journey status to true' do
       oystercard.top_up(balance_limit)
@@ -36,19 +29,19 @@ describe Oystercard do
   end
 
   describe '#touch_out' do
-    it 'should change the in journey status to false' do
+    before do
       oystercard.top_up(balance_limit)
       oystercard.touch_in
+    end
+
+    it 'should change the in journey status to false' do
       oystercard.touch_out
       expect(oystercard).not_to be_in_journey
     end
     it 'should reduce the balance by the fare' do
-      oystercard.top_up(balance_limit)
-      oystercard.touch_in
       expect { oystercard.touch_out }.to change { oystercard.balance }.from(balance_limit).to(balance_limit-1)
     end
   end
-
 
   describe '#in_journey?' do
     it 'should be false before touching in' do
