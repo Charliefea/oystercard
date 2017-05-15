@@ -24,4 +24,16 @@ describe Oystercard do
     end
   end
 
+  describe '#touch_in' do
+    it 'should change the in journey status to true' do
+      oystercard.touch_in
+      expect(oystercard).to be_in_journey
+    end
+  end
+
+  describe '#in_journey?' do
+    it 'should be false before touching in' do
+      expect(oystercard).not_to be_in_journey
+    end
+  end
 end
